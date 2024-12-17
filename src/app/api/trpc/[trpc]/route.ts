@@ -1,11 +1,9 @@
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { type NextRequest } from "next/server";
 
 import { env } from "~/env";
 import { appRouter } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
 
-import { generateOpenApiDocument } from 'trpc-to-openapi';
 import { createOpenApiFetchHandler } from 'trpc-to-openapi';
 
 /**
@@ -33,12 +31,6 @@ const handler = (req: NextRequest) =>
           }
         : undefined,
   });
-
-export const openApiDocument = generateOpenApiDocument(appRouter, {
-  title: 'tRPC OpenAPI',
-  version: '1.0.0',
-  baseUrl: 'http://localhost:3000/api/trpc',
-});
 
 export {
   handler as GET,
