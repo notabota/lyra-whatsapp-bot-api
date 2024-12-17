@@ -4,7 +4,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
   chats: publicProcedure
-    .meta({ openapi: { method: 'GET', path: '/hello' } })
+    .meta({ openapi: { method: 'GET', path: '/chats' } })
     .input(z.void())
     .output(z.array(z.object({ id: z.string(), name: z.string().nullable() })))
     .query(async ({ ctx }) => {
