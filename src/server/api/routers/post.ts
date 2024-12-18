@@ -6,29 +6,14 @@ export const postRouter = createTRPCRouter({
   chats: publicProcedure
     .meta({ openapi: { method: 'GET', path: '/chats' } })
     .input(z.void())
-    .output(z.array(z.object({ id: z.string(), name: z.string().nullable() })))
-    .query(async ({ ctx }) => {
-      return await ctx.db.chats.findMany();
-    }),
-
-  messages: publicProcedure
-    .meta({ openapi: { method: 'GET', path: '/messages' } })
-    .input(z.void())
     .output(z.array(z.object({
       id: z.string(),
-      body: z.string().nullable(),
-      author: z.string().nullable(),
-      from: z.string().nullable(),
-      to: z.string().nullable(),
-      type: z.string().nullable(),
-      data: z.string().nullable(),
-      filename: z.string().nullable(),
-      mimetype: z.string().nullable(),
-      filesize: z.number().nullable(),
-      timestamp: z.number().nullable()
+      createdAt: z.date(),
+      updatedAt: z.date(),
+      name: z.string().nullable()
     })))
     .query(async ({ ctx }) => {
-      return await ctx.db.messages.findMany();
+      return await ctx.db.whatsapp_chat.findMany();
     }),
 
   contacts: publicProcedure
@@ -36,24 +21,49 @@ export const postRouter = createTRPCRouter({
     .input(z.void())
     .output(z.array(z.object({
       id: z.string(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
       name: z.string().nullable(),
-      number: z.string().nullable(),
-      pushname: z.string().nullable(),
+      phoneNumber: z.string(),
+      pushName: z.string(),
       shortName: z.string().nullable()
     })))
     .query(async ({ ctx }) => {
-      return await ctx.db.contacts.findMany();
+      return await ctx.db.whatsapp_contact.findMany();
     }),
 
-  contactChat: publicProcedure
+  contactToChat: publicProcedure
     .meta({ openapi: { method: 'GET', path: '/contact-chat' } })
     .input(z.void())
     .output(z.array(z.object({
       id: z.number(),
-      contact_id: z.string().nullable(),
-      chat_id: z.string().nullable()
+      createdAt: z.date(),
+      updatedAt: z.date(),
+      contactId: z.string(),
+      chatId: z.string()
     })))
     .query(async ({ ctx }) => {
-      return await ctx.db.contact_chat.findMany();
+      return await ctx.db.whatsapp_contact_to_chat.findMany();
+    }),
+
+  messages: publicProcedure
+    .meta({ openapi: { method: 'GET', path: '/messages' } })
+    .input(z.void())
+    .output(z.array(z.object({
+      id: z.string(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+      messageId: z.string(),
+      body: z.string(),
+      type: z.string(),
+      data: z.string().nullable(),
+      filename: z.string().nullable(),
+      mimetype: z.string().nullable(),
+      filesize: z.number().nullable(),
+      timestamp: z.number(),
+      contactToChatId: z.number()
+    })))
+    .query(async ({ ctx }) => {
+      return await ctx.db.whatsapp_message.findMany();
     }),
 });

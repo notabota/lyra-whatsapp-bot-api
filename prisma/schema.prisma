@@ -7,35 +7,60 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model chats {
-  id   String  @id
-  name String?
+model whatsapp_chat {
+  id                       String                     @id
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime
+  name                     String?
+  whatsapp_contact_to_chat whatsapp_contact_to_chat[]
+
+  @@index([name])
 }
 
-model contact_chat {
-  id         Int     @id @default(autoincrement())
-  contact_id String?
-  chat_id    String?
+model whatsapp_contact {
+  id                       String                     @id
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime
+  name                     String?
+  phoneNumber              String                     @unique
+  pushName                 String
+  shortName                String?
+  whatsapp_contact_to_chat whatsapp_contact_to_chat[]
+
+  @@index([name])
+  @@index([phoneNumber])
 }
 
-model contacts {
-  id        String  @id
-  name      String?
-  number    String?
-  pushname  String?
-  shortName String?
+model whatsapp_contact_to_chat {
+  id               Int                @id @default(autoincrement())
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime
+  contactId        String
+  chatId           String
+  whatsapp_chat    whatsapp_chat      @relation(fields: [chatId], references: [id])
+  whatsapp_contact whatsapp_contact   @relation(fields: [contactId], references: [id])
+  whatsapp_message whatsapp_message[]
+
+  @@unique([contactId, chatId])
+  @@index([chatId])
+  @@index([contactId])
 }
 
-model messages {
-  id        String  @id
-  body      String?
-  author    String?
-  from      String?
-  to        String?
-  type      String?
-  data      String?
-  filename  String?
-  mimetype  String?
-  filesize  Int?
-  timestamp Int?
+model whatsapp_message {
+  id                       String                   @id
+  createdAt                DateTime                 @default(now())
+  updatedAt                DateTime
+  messageId                String                   @unique
+  body                     String
+  type                     String
+  data                     String?
+  filename                 String?
+  mimetype                 String?
+  filesize                 Int?
+  timestamp                Int
+  contactToChatId          Int
+  whatsapp_contact_to_chat whatsapp_contact_to_chat @relation(fields: [contactToChatId], references: [id])
+
+  @@index([contactToChatId])
+  @@index([messageId])
 }
