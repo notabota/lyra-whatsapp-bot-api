@@ -9,9 +9,9 @@
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { OpenApiMeta } from 'trpc-to-openapi';
 
 import { db } from "~/server/db";
+import { OpenApiMeta } from 'trpc-to-openapi';
 
 /**
  * 1. CONTEXT
@@ -105,3 +105,4 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
+
